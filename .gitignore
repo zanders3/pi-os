@@ -1,0 +1,5 @@
+yagarto-4.7.2/**
+kernel.img
+kernel.map
+kernel.list
+build/**
