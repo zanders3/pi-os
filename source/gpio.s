@@ -25,23 +25,34 @@ pop {pc}
 
 .globl SetGpio
 SetGpio:
-@r0 pinNumber, r1 pinValue
-cmp r0,#53
+pinNum .req r0
+pinVal .req r1
+
+cmp pinNum,#53
 movhi pc,lr
 push {lr}
-mov r2,r0
+mov r2,pinNum
+.unreq pinNum
+pinNum .req r2
 bl GetGpioAddress
-@r0 gpioAddr, r1 pinValue, r2 pinNumber
-lsr r3,r2,#5
-lsl r3,#2
-add r0,r3
-@r0 final gpioAddr, r1 pinValue, r2 pinNumber
-and r2,#31
+gpioAddr .req r0
 
+pinBank .req r3
+lsr pinBank,pinNum,#5
+lsl pinBank,#2
+add gpioAddr,pinBank
+.unreq pinBank
+
+and pinNum,#31
 setBit .req r3
 mov setBit,#1
-lsl setBit,r2
-teq r1,#0
-streq setBit,[r0,#40]
-streq setBit,[r0,#28]
+lsl setBit,pinNum
+.unreq pinNum
+
+teq pinVal,#0
+.unreq pinVal
+streq setBit,[gpioAddr,#40]
+strne setBit,[gpioAddr,#28]
+.unreq setBit
+.unreq gpioAddr
 pop {pc}
